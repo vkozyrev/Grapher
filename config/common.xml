@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dmz>
+<plugin-list>
+   <plugin name="dmzObjectModuleBasic"/>
+   <plugin name="dmzPluginSaveMessageMonostate" scope="save-preferences"/>
+   <plugin name="dmzObjectModuleBasic"/>
+   <plugin name="dmzObjectModuleGridBasic"/>
+   <plugin name="dmzQtModuleMainWindowBasic" scope="main-window"/>
+<!--   <plugin name="dmzQtPluginObjectInspector"/> -->
+</plugin-list>
+<save-preferences>
+   <message name="Update_Node_Count_Message"/>
+   <message name="Update_Link_Count_Message"/>
+</save-preferences>
+<main-window>
+<!--   <fixed-size x="600" y="622"/> -->
+   <corners>
+      <top right="true" left="true"/>
+      <bottom right="true" left="true"/>
+   </corners>
+   <window title="Floater"/>
+   <central-widget name="mainWindow"/>
+   <!--<menu-bar>
+      <menu text="&amp;File"/>
+      <menu text="&amp;Edit"/>
+      <menu text="&amp;Window"/>
+      <menu text="&amp;Help"/>
+   </menu-bar> -->
+</main-window>
+</dmz>

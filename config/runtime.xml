@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dmz>
+  <runtime>
+
+    <object-type name="boid">
+      <canvas-obect-basic>
+         <item>
+            <image name="circle" reource="circle" />
+         </item>
+      </canvas-object-basic>
+    </object-type>
+
+  </runtime>
+</dmz>
