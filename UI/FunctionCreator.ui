@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>300</width>
+    <height>400</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QFrame" name="SinFrame">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>190</y>
+      <width>300</width>
+      <height>161</height>
+     </rect>
+    </property>
+    <property name="autoFillBackground">
+     <bool>true</bool>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+    <widget class="QLabel" name="SinLabel">
+     <property name="geometry">
+      <rect>
+       <x>125</x>
+       <y>5</y>
+       <width>62</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Sin Editor</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QFrame" name="CosFrame">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>190</y>
+      <width>300</width>
+      <height>161</height>
+     </rect>
+    </property>
+    <property name="autoFillBackground">
+     <bool>true</bool>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+    <widget class="QLabel" name="CosLabel">
+     <property name="geometry">
+      <rect>
+       <x>125</x>
+       <y>5</y>
+       <width>62</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Cos Editor</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QFrame" name="LineFrame">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>190</y>
+      <width>300</width>
+      <height>161</height>
+     </rect>
+    </property>
+    <property name="autoFillBackground">
+     <bool>true</bool>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+    <widget class="QLabel" name="LineLabel">
+     <property name="geometry">
+      <rect>
+       <x>125</x>
+       <y>5</y>
+       <width>62</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Line Editor</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QFrame" name="PolynomialFrame">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>190</y>
+      <width>300</width>
+      <height>161</height>
+     </rect>
+    </property>
+    <property name="autoFillBackground">
+     <bool>true</bool>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+    <widget class="QLabel" name="PolyLabel">
+     <property name="geometry">
+      <rect>
+       <x>125</x>
+       <y>5</y>
+       <width>62</width>
+       <height>16</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Poly Editor</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QListView" name="FunctionList">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>10</y>
+      <width>256</width>
+      <height>181</height>
+     </rect>
+    </property>
+    <property name="alternatingRowColors">
+     <bool>false</bool>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>300</width>
+     <height>22</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

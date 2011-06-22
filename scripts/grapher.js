@@ -18,6 +18,7 @@ var dmz =
    , vector: require("dmz/types/vector")
    , graphlib: require("dmz/types/graph")
    , resources: require("dmz/runtime/resources")
+   , grapher: require("grapherConst")
    }
 
    //UI
@@ -38,34 +39,12 @@ var dmz =
    for linear and parabolic: xVal
    */
 
-   // DMZ Objects Types
-   , FunctionType = dmz.objectType.lookup("equation")
-
-   // DMZ States
-   , SinState = dmz.defs.lookupState("SIN_FUNC")
-   , CosState = dmz.defs.lookupState("COS_FUNC")
-   , LineState = dmz.defs.lookupState("LINE_FUNC")
-   , PolyState = dmz.defs.lookupState("POLY_FUNC")
-
-   // DMZ Handles
-   , TypeHandle = dmz.defs.createNamedHandle("function_type")
-   , XConstHandle = dmz.defs.createNamedHandle("x_const")
-   , YConstHandle = dmz.defs.createNamedHandle("y_const")
-   , AmpHandle = dmz.defs.createNamedHandle("amp")
-   , FreqHandle = dmz.defs.createNamedHandle("freq")
-   , XValHandle = dmz.defs.createNamedHandle("x_val")
-   , PolyDataHandle = dmz.defs.createNamedHandle("poly_data")
-   , PolyDataArrayHandle = dmz.defs.createNamedHandle("data_array")
-   , PolyDataArrayLengthHandle = dmz.defs.createNamedHandle("Data_array_length")
-
    // Constants
    , WIDTH = 551
    , HEIGHT = 431
    , MAX_X = 10
    , MAX_Y = 10
    , TOLERANCE = .05
-
-   // Globals
 
    // Functions
    , drawFunction
@@ -99,10 +78,10 @@ drawFunction = function (tolerance) {
      , xEnd
      , yEnd
      , arrayLength
-     , SinFunctionTypeMask = dmz.mask.create(SinState)
-     , CosFunctionTypeMask = dmz.mask.create(CosState)
-     , LineFunctionTypeMask = dmz.mask.create(LineState)
-     , PolyFunctionTypeMask = dmz.mask.create(PolyState)
+     , SinFunctionTypeMask = dmz.mask.create(dmz.grapher.SinState)
+     , CosFunctionTypeMask = dmz.mask.create(dmz.grapher.CosState)
+     , LineFunctionTypeMask = dmz.mask.create(dmz.grapher.LineState)
+     , PolyFunctionTypeMask = dmz.mask.create(dmz.grapher.PolyState)
      , graphScene = dmz.ui.graph.createScene(0, 0, WIDTH, HEIGHT)
      , path = dmz.ui.graph.createPainterPath()
      ;
@@ -114,13 +93,13 @@ drawFunction = function (tolerance) {
    for (functionItor = 0; functionItor < functions.length; functionItor++){
 
       equation = functions[functionItor];
-      xConst = dmz.object.scalar(equation, XConstHandle);
-      yConst = dmz.object.scalar(equation, YConstHandle);
-      amp = dmz.object.scalar(equation, AmpHandle);
-      freq = dmz.object.scalar(equation, FreqHandle);
-      xVal = dmz.object.scalar(equation, XValHandle);
-      currentState = dmz.object.state(equation, TypeHandle);
-      polyData = dmz.object.data(equation, PolyDataHandle);
+      xConst = dmz.object.scalar(equation, dmz.grapher.XConstHandle);
+      yConst = dmz.object.scalar(equation, dmz.grapher.YConstHandle);
+      amp = dmz.object.scalar(equation, dmz.grapher.AmpHandle);
+      freq = dmz.object.scalar(equation, dmz.grapher.FreqHandle);
+      xVal = dmz.object.scalar(equation, dmz.grapher.XValHandle);
+      currentState = dmz.object.state(equation, dmz.grapher.TypeHandle);
+      polyData = dmz.object.data(equation, dmz.grapher.PolyDataHandle);
 
 
       if (currentState.equal(SinFunctionTypeMask)) {
@@ -177,12 +156,13 @@ drawFunction = function (tolerance) {
       if (currentState.equal(PolyFunctionTypeMask)) {
 
          self.log.warn("Polynomic State");
-         arrayLength = polyData.number(PolyDataArrayLengthHandle, PolyDataArrayLengthHandle);
+         arrayLength = polyData.number(dmz.grapher.PolyDataArrayLengthHandle
+                                     , dmz.grapher.PolyDataArrayLengthHandle);
          xVal = MAX_X * -1;
          yVal = 0;
          for (arrayItor = 0; arrayItor < arrayLength; arrayItor++){
 
-            xPolyVal = polyData.number(PolyDataArrayHandle, arrayItor);
+            xPolyVal = polyData.number(dmz.grapher.PolyDataArrayHandle, arrayItor);
             yVal += xPolyVal * Math.pow(xVal, arrayLength - arrayItor);
          }
          yVal += yConst;
@@ -196,7 +176,7 @@ drawFunction = function (tolerance) {
             yVal = 0;
             for (arrayItor = 0; arrayItor < arrayLength; arrayItor++){
 
-               xPolyVal = polyData.number(PolyDataArrayHandle, arrayItor);
+               xPolyVal = polyData.number(dmz.grapher.PolyDataArrayHandle, arrayItor);
                yVal += xPolyVal * Math.pow(xVal, arrayLength - arrayItor);
             }
             yVal += yConst;
@@ -223,39 +203,41 @@ init = function () {
      ;
 
    // create initial sin function
-   sinFunction = dmz.object.create(FunctionType);
+   sinFunction = dmz.object.create(dmz.grapher.FunctionType);
    dmz.object.activate(sinFunction);
 
-   dmz.object.state(sinFunction, TypeHandle, SinState);
-   dmz.object.scalar(sinFunction, XConstHandle, 0);
-   dmz.object.scalar(sinFunction, YConstHandle, 0);
-   dmz.object.scalar(sinFunction, AmpHandle, 4);
-   dmz.object.scalar(sinFunction, FreqHandle, Math.PI);
+   dmz.object.state(sinFunction, dmz.grapher.TypeHandle, dmz.grapher.SinState);
+   dmz.object.scalar(sinFunction, dmz.grapher.XConstHandle, 0);
+   dmz.object.scalar(sinFunction, dmz.grapher.YConstHandle, 0);
+   dmz.object.scalar(sinFunction, dmz.grapher.AmpHandle, 4);
+   dmz.object.scalar(sinFunction, dmz.grapher.FreqHandle, Math.PI);
    functions.push(sinFunction);
 
    // create a line function
-   lineFunction = dmz.object.create(FunctionType);
+   lineFunction = dmz.object.create(dmz.grapher.FunctionType);
    dmz.object.activate(lineFunction);
 
-   dmz.object.state(lineFunction, TypeHandle, LineState);
-   dmz.object.scalar(lineFunction, YConstHandle, 0);
-   dmz.object.scalar(lineFunction, XConstHandle, 1)
+   dmz.object.state(lineFunction, dmz.grapher.TypeHandle, dmz.grapher.LineState);
+   dmz.object.scalar(lineFunction, dmz.grapher.YConstHandle, 0);
+   dmz.object.scalar(lineFunction, dmz.grapher.XConstHandle, 1)
    functions.push(lineFunction);
 
    // create initial poly function
-   polyFunction = dmz.object.create(FunctionType);
+   polyFunction = dmz.object.create(dmz.grapher.FunctionType);
    dmz.object.activate(polyFunction);
 
    polyValues = [-3, -1.5, 2];
    data = dmz.data.create();
    for (itor = 0; itor < polyValues.length; itor++){
 
-      data.number(PolyDataArrayHandle, itor, polyValues[itor]);
-      data.number(PolyDataArrayLengthHandle, PolyDataArrayLengthHandle, polyValues.length);
+      data.number(dmz.grapher.PolyDataArrayHandle, itor, polyValues[itor]);
+      data.number(dmz.grapher.PolyDataArrayLengthHandle
+                , dmz.grapher.PolyDataArrayLengthHandle
+                , polyValues.length);
    }
-   dmz.object.state(polyFunction, TypeHandle, PolyState);
-   dmz.object.scalar(polyFunction, YConstHandle, 0);
-   dmz.object.data(polyFunction, PolyDataHandle, data);
+   dmz.object.state(polyFunction, dmz.grapher.TypeHandle, dmz.grapher.PolyState);
+   dmz.object.scalar(polyFunction, dmz.grapher.YConstHandle, 0);
+   dmz.object.data(polyFunction, dmz.grapher.PolyDataHandle, data);
 
    functions.push(polyFunction);
 
