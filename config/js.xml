@@ -16,7 +16,8 @@
 <javascript>
    <path value="./scripts"/>
    <path value="../js/scripts"/>
-   <instance name="floater"/>
+   <path value="./UI" />
+   <instance name="grapher"/>
 </javascript>
 </dmz>
 

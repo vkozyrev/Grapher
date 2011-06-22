@@ -6,7 +6,6 @@
             <path value="./assets/" />
          </search>
          <resource name="circle" file="circle.png" />
-         <resource name="star" file="star.png" />
       </resource-map>
    </runtime>
 </dmz>

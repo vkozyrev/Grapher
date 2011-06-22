@@ -2,5 +2,5 @@
 <manifest>
    <config file="config/common.xml" />
    <config file="config/js.xml" />
-   <config file="cpmfig/resource.xml" />
+   <config file="config/resource.xml" />
 </manifest>

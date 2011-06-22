@@ -1,14 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <dmz>
-  <runtime>
+   <runtime>
 
-    <object-type name="boid">
-      <canvas-obect-basic>
-         <item>
-            <image name="circle" reource="circle" />
-         </item>
-      </canvas-object-basic>
-    </object-type>
+      <state name="SIN_FUNC" />
+      <state name="COS_FUNC" />
+      <state name="LINE_FUNC" />
+      <state name="POLY_FUNC" />
 
-  </runtime>
+      <object-type name="tracer">
+         <canvas-object-basic>
+            <item>
+               <image name="circle" reource="circle" />
+            </item>
+         </canvas-object-basic>
+      </object-type>
+      <object-type name="equation" />
+
+   </runtime>
 </dmz>
