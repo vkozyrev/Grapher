@@ -22,12 +22,12 @@ var dmz =
    }
 
    //UI
-   , mainWindow = dmz.ui.loader.load("Grapher.ui")
-   , grapherView = mainWindow.lookup("grapherView")
-   , addNewFunctionButton = mainWindow.lookup("addNewFunctionButton")
-   , nextFrameButton = mainWindow.lookup("nextFrameButton")
-   , ampSlider = mainWindow.lookup("ampSlider")
-   , freqSlider = mainWindow.lookup("freqSlider")
+   , mainGraphWindow = dmz.ui.loader.load("Grapher.ui")
+   , grapherView = mainGraphWindow.lookup("grapherView")
+   , addNewFunctionButton = mainGraphWindow.lookup("addNewFunctionButton")
+   , nextFrameButton = mainGraphWindow.lookup("nextFrameButton")
+   , ampSlider = mainGraphWindow.lookup("ampSlider")
+   , freqSlider = mainGraphWindow.lookup("freqSlider")
 
    // DMZ Function Object Definition
    , functions = []
@@ -45,11 +45,13 @@ var dmz =
    , MAX_X = 10
    , MAX_Y = 10
    , TOLERANCE = .05
+   , DEBUG = false
 
    // Functions
-   , drawFunction
    , xToScreenX
    , yToScreenY
+   , functionToString
+   , drawFunction
    , init
    ;
 
@@ -57,7 +59,57 @@ xToScreenX = function (x) { return (WIDTH / (2 * MAX_X)) * (x + MAX_X); };
 
 yToScreenY = function (y) { return HEIGHT - ((HEIGHT / (2 * MAX_Y)) * (y + MAX_Y)); };
 
+functionToString = function (functionHandle) {
+
+   var SinFunctionTypeMask = dmz.mask.create(dmz.grapher.SinState)
+     , CosFunctionTypeMask = dmz.mask.create(dmz.grapher.CosState)
+     , LineFunctionTypeMask = dmz.mask.create(dmz.grapher.LineState)
+     , PolyFunctionTypeMask = dmz.mask.create(dmz.grapher.PolyState)
+     , xConst = dmz.object.scalar(functionHandle, dmz.grapher.XConstHandle)
+     , yConst = dmz.object.scalar(functionHandle, dmz.grapher.YConstHandle)
+     , amp = dmz.object.scalar(functionHandle, dmz.grapher.AmpHandle)
+     , freq = dmz.object.scalar(functionHandle, dmz.grapher.FreqHandle)
+     , xVal = dmz.object.scalar(functionHandle, dmz.grapher.XValHandle)
+     , currentState = dmz.object.state(functionHandle, dmz.grapher.TypeHandle)
+     , polyData = dmz.object.data(functionHandle, dmz.grapher.PolyDataHandle)
+     , polyDataLength
+     , equationString = ""
+     , itor
+     ;
+
+   if (currentState.equal(SinFunctionTypeMask)) {
+
+      equationString = amp + " * sin(" + freq + "x + " + xConst + " ) + " + yConst;
+      if (DEBUG) { self.log.warn(equationString); }
+   }
+   if (currentState.equal(CosFunctionTypeMask)) {
+
+      equationString = amp + " * cos(" + freq + "x + " + xConst + " ) + " + yConst;
+      if (DEBUG) { self.log.warn(equationString); }
+   }
+   if (currentState.equal(LineFunctionTypeMask)) {
+
+      equationString = xConst + "x + " + yConst;
+      if (DEBUG) { self.log.warn(equationString); }
+   }
+   if (currentState.equal(PolyFunctionTypeMask)) {
+      polyDataLength = polyData.number(dmz.grapher.PolyDataArrayLengthHandle
+                                     , dmz.grapher.PolyDataArrayLengthHandle)
+
+      for (itor = 0; itor < polyDataLength; itor++) {
+
+         equationString += "(" + polyData.number(dmz.grapher.PolyDataArrayHandle, itor)
+                                + "x^" + (polyDataLength - itor) + ") + ";
+      }
+      equationString += yConst;
+      if (DEBUG) { self.log.warn(equationString); }
+   }
+   return equationString;
+};
+
 drawFunction = function (tolerance) {
+
+   /* TODO: clean up declaratons, split no 4 function */
    var equation
      , xConst
      , yConst
@@ -67,6 +119,7 @@ drawFunction = function (tolerance) {
      , yVal
      , currentState
      , polyData
+     , selectedFlag
      , xCoor
      , yCoor
      , itor
@@ -85,6 +138,8 @@ drawFunction = function (tolerance) {
      , graphScene = dmz.ui.graph.createScene(0, 0, WIDTH, HEIGHT)
      , path = dmz.ui.graph.createPainterPath()
      ;
+
+   self.log.warn("DRAWING TIME!!");
    graphScene.addLine(0, 216, WIDTH, 216);
    graphScene.addLine(276, 0, 276, HEIGHT);
    path.moveTo(0, 0);
@@ -93,6 +148,7 @@ drawFunction = function (tolerance) {
    for (functionItor = 0; functionItor < functions.length; functionItor++){
 
       equation = functions[functionItor];
+
       xConst = dmz.object.scalar(equation, dmz.grapher.XConstHandle);
       yConst = dmz.object.scalar(equation, dmz.grapher.YConstHandle);
       amp = dmz.object.scalar(equation, dmz.grapher.AmpHandle);
@@ -100,79 +156,67 @@ drawFunction = function (tolerance) {
       xVal = dmz.object.scalar(equation, dmz.grapher.XValHandle);
       currentState = dmz.object.state(equation, dmz.grapher.TypeHandle);
       polyData = dmz.object.data(equation, dmz.grapher.PolyDataHandle);
+      selectedFlag = dmz.object.flag(equation, dmz.grapher.SelectedHandle);
 
+      if (selectedFlag) {
 
-      if (currentState.equal(SinFunctionTypeMask)) {
+         if (currentState.equal(SinFunctionTypeMask)) {
 
-         self.log.warn ("Sin State");
-         xCoor = MAX_X * -1;
-         yCoor = amp * (Math.sin((freq * xCoor) + xConst)) + yConst;
-         xCoor = xToScreenX(xCoor);
-         yCoor = yToScreenY(yCoor);
-         path.moveTo(Math.floor(xCoor), Math.floor(yCoor));
-         for (itor = (MAX_X * -1) + tolerance; itor < MAX_X ; itor += tolerance) {
-
-            xCoor = itor;
+            if (DEBUG) { self.log.warn ("Sin State"); }
+            xCoor = MAX_X * -1;
             yCoor = amp * (Math.sin((freq * xCoor) + xConst)) + yConst;
             xCoor = xToScreenX(xCoor);
             yCoor = yToScreenY(yCoor);
-            path.lineTo(Math.floor(xCoor), Math.floor(yCoor));
+            path.moveTo(Math.floor(xCoor), Math.floor(yCoor));
+            for (itor = (MAX_X * -1) + tolerance; itor < MAX_X ; itor += tolerance) {
+
+               xCoor = itor;
+               yCoor = amp * (Math.sin((freq * xCoor) + xConst)) + yConst;
+               xCoor = xToScreenX(xCoor);
+               yCoor = yToScreenY(yCoor);
+               path.lineTo(Math.floor(xCoor), Math.floor(yCoor));
+            }
          }
-      }
 
-      if (currentState.equal(CosFunctionTypeMask)) {
+         if (currentState.equal(CosFunctionTypeMask)) {
 
-         self.log.warn("Cos State");
-         xCoor = MAX_X * -1;
-         yCoor = amp * (Math.cos ((freq * xCoor) + xConst)) + yConst;
-         xCoor = xToScreenX(xCoor);
-         yCoor = yToScreenY(yCoor);
-         path.moveTo (Math.floor(xCoor), Math.floor(yCoor));
-         for (itor = (MAX_X * -1) + tolerance; itor < MAX_X ; itor += tolerance) {
-
-            xCoor = itor;
+            if (DEBUG) { self.log.warn("Cos State"); }
+            xCoor = MAX_X * -1;
             yCoor = amp * (Math.cos ((freq * xCoor) + xConst)) + yConst;
             xCoor = xToScreenX(xCoor);
             yCoor = yToScreenY(yCoor);
-            path.lineTo(Math.floor (xCoor), Math.floor (yCoor));
+            path.moveTo (Math.floor(xCoor), Math.floor(yCoor));
+            for (itor = (MAX_X * -1) + tolerance; itor < MAX_X ; itor += tolerance) {
+
+               xCoor = itor;
+               yCoor = amp * (Math.cos ((freq * xCoor) + xConst)) + yConst;
+               xCoor = xToScreenX(xCoor);
+               yCoor = yToScreenY(yCoor);
+               path.lineTo(Math.floor (xCoor), Math.floor (yCoor));
+            }
          }
-      }
 
-      if (currentState.equal(LineFunctionTypeMask)) {
+         if (currentState.equal(LineFunctionTypeMask)) {
 
-         self.log.warn("Line State");
-         xStart = MAX_X * -1;
-         xEnd = MAX_X;
-         yStart = (xConst * xStart) + yConst
-         yEnd = (xConst * xEnd) + yConst
-         xStart = xToScreenX(xStart);
-         xEnd = xToScreenX(xEnd);
-         yStart = yToScreenY(yStart);
-         yEnd = yToScreenY(yEnd);
-         path.moveTo(Math.floor(xStart), Math.floor(yStart));
-         path.lineTo(Math.floor(xEnd), Math.floor(yEnd));
-      }
-
-      if (currentState.equal(PolyFunctionTypeMask)) {
-
-         self.log.warn("Polynomic State");
-         arrayLength = polyData.number(dmz.grapher.PolyDataArrayLengthHandle
-                                     , dmz.grapher.PolyDataArrayLengthHandle);
-         xVal = MAX_X * -1;
-         yVal = 0;
-         for (arrayItor = 0; arrayItor < arrayLength; arrayItor++){
-
-            xPolyVal = polyData.number(dmz.grapher.PolyDataArrayHandle, arrayItor);
-            yVal += xPolyVal * Math.pow(xVal, arrayLength - arrayItor);
+            if (DEBUG) { self.log.warn("Line State"); }
+            xStart = MAX_X * -1;
+            xEnd = MAX_X;
+            yStart = (xConst * xStart) + yConst
+            yEnd = (xConst * xEnd) + yConst
+            xStart = xToScreenX(xStart);
+            xEnd = xToScreenX(xEnd);
+            yStart = yToScreenY(yStart);
+            yEnd = yToScreenY(yEnd);
+            path.moveTo(Math.floor(xStart), Math.floor(yStart));
+            path.lineTo(Math.floor(xEnd), Math.floor(yEnd));
          }
-         yVal += yConst;
-         self.log.warn(xVal, yVal);
-         xVal = xToScreenX(xVal);
-         yVal = yToScreenY(yVal);
-         path.moveTo(xVal, yVal);
-         for (itor = (MAX_X * -1) + tolerance; itor < MAX_X; itor += tolerance){
 
-            xVal = itor;
+         if (currentState.equal(PolyFunctionTypeMask)) {
+
+            if (DEBUG) { self.log.warn("Polynomic State"); }
+            arrayLength = polyData.number(dmz.grapher.PolyDataArrayLengthHandle
+                                        , dmz.grapher.PolyDataArrayLengthHandle);
+            xVal = MAX_X * -1;
             yVal = 0;
             for (arrayItor = 0; arrayItor < arrayLength; arrayItor++){
 
@@ -180,11 +224,24 @@ drawFunction = function (tolerance) {
                yVal += xPolyVal * Math.pow(xVal, arrayLength - arrayItor);
             }
             yVal += yConst;
-            self.log.warn(xVal, yVal);
             xVal = xToScreenX(xVal);
             yVal = yToScreenY(yVal);
-            path.lineTo(xVal, yVal);
-            yVal = 0;
+            path.moveTo(xVal, yVal);
+            for (itor = (MAX_X * -1) + tolerance; itor < MAX_X; itor += tolerance){
+
+               xVal = itor;
+               yVal = 0;
+               for (arrayItor = 0; arrayItor < arrayLength; arrayItor++){
+
+                  xPolyVal = polyData.number(dmz.grapher.PolyDataArrayHandle, arrayItor);
+                  yVal += xPolyVal * Math.pow(xVal, arrayLength - arrayItor);
+               }
+               yVal += yConst;
+               xVal = xToScreenX(xVal);
+               yVal = yToScreenY(yVal);
+               path.lineTo(xVal, yVal);
+               yVal = 0;
+            }
          }
       }
    }
@@ -211,6 +268,11 @@ init = function () {
    dmz.object.scalar(sinFunction, dmz.grapher.YConstHandle, 0);
    dmz.object.scalar(sinFunction, dmz.grapher.AmpHandle, 4);
    dmz.object.scalar(sinFunction, dmz.grapher.FreqHandle, Math.PI);
+   dmz.object.text(sinFunction
+                   , dmz.grapher.FunctionStringHandle
+                   , functionToString(sinFunction))
+                   ;
+   dmz.object.flag(sinFunction, dmz.grapher.SelectedHandle, false);
    functions.push(sinFunction);
 
    // create a line function
@@ -219,7 +281,12 @@ init = function () {
 
    dmz.object.state(lineFunction, dmz.grapher.TypeHandle, dmz.grapher.LineState);
    dmz.object.scalar(lineFunction, dmz.grapher.YConstHandle, 0);
-   dmz.object.scalar(lineFunction, dmz.grapher.XConstHandle, 1)
+   dmz.object.scalar(lineFunction, dmz.grapher.XConstHandle, 1);
+   dmz.object.text(lineFunction
+                   , dmz.grapher.FunctionStringHandle
+                   , functionToString(lineFunction))
+                   ;
+   dmz.object.flag(lineFunction, dmz.grapher.SelectedHandle, false);
    functions.push(lineFunction);
 
    // create initial poly function
@@ -233,17 +300,22 @@ init = function () {
       data.number(dmz.grapher.PolyDataArrayHandle, itor, polyValues[itor]);
       data.number(dmz.grapher.PolyDataArrayLengthHandle
                 , dmz.grapher.PolyDataArrayLengthHandle
-                , polyValues.length);
+                , polyValues.length)
+                ;
    }
    dmz.object.state(polyFunction, dmz.grapher.TypeHandle, dmz.grapher.PolyState);
    dmz.object.scalar(polyFunction, dmz.grapher.YConstHandle, 0);
    dmz.object.data(polyFunction, dmz.grapher.PolyDataHandle, data);
-
+   dmz.object.text(polyFunction
+                   , dmz.grapher.FunctionStringHandle
+                   , functionToString(polyFunction))
+                   ;
+   dmz.object.flag(polyFunction, dmz.grapher.SelectedHandle, false);
    functions.push(polyFunction);
 
    //set up window
-   dmz.ui.mainWindow.centralWidget(mainWindow);
-   if (mainWindow) {
+   dmz.ui.mainWindow.centralWidget(mainGraphWindow);
+   if (mainGraphWindow) {
 
       graphScene = dmz.ui.graph.createScene(0, 0, WIDTH, HEIGHT);
       grapherView.scene(graphScene);
@@ -251,8 +323,12 @@ init = function () {
    }
 };
 
-init();
+dmz.object.flag.observe(self, dmz.grapher.SelectedHandle, function (handle, attr, newFlag, oldFlag) {
 
+   drawFunction(TOLERANCE);
+});
+
+init();
 
 
 

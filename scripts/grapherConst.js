@@ -18,7 +18,9 @@ var dmz =
      , XValHandle: dmz.defs.createNamedHandle("x_val")
      , PolyDataHandle: dmz.defs.createNamedHandle("poly_data")
      , PolyDataArrayHandle: dmz.defs.createNamedHandle("data_array")
-     , PolyDataArrayLengthHandle: dmz.defs.createNamedHandle("Data_array_length")
+     , PolyDataArrayLengthHandle: dmz.defs.createNamedHandle("data_array_length")
+     , SelectedHandle: dmz.defs.createNamedHandle("selected_handle")
+     , FunctionStringHandle: dmz.defs.createNamedHandle("function_string")
      }
   , States =
      { SinState: dmz.defs.lookupState("SIN_FUNC")
