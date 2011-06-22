@@ -21,7 +21,7 @@ var dmz =
    }
 
    //UI
-   , mainWindow = dmz.ui.loader.load("./scripts/Grapher.ui")
+   , mainWindow = dmz.ui.loader.load("Grapher.ui")
    , grapherView = mainWindow.lookup("grapherView")
    , addNewFunctionButton = mainWindow.lookup("addNewFunctionButton")
    , nextFrameButton = mainWindow.lookup("nextFrameButton")
@@ -114,7 +114,6 @@ drawFunction = function (tolerance) {
    for (functionItor = 0; functionItor < functions.length; functionItor++){
 
       equation = functions[functionItor];
-      equation = functions[2];
       xConst = dmz.object.scalar(equation, XConstHandle);
       yConst = dmz.object.scalar(equation, YConstHandle);
       amp = dmz.object.scalar(equation, AmpHandle);
