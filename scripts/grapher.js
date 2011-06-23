@@ -24,10 +24,6 @@ var dmz =
    //UI
    , mainGraphWindow = dmz.ui.loader.load("Grapher.ui")
    , grapherView = mainGraphWindow.lookup("grapherView")
-   , addNewFunctionButton = mainGraphWindow.lookup("addNewFunctionButton")
-   , nextFrameButton = mainGraphWindow.lookup("nextFrameButton")
-   , ampSlider = mainGraphWindow.lookup("ampSlider")
-   , freqSlider = mainGraphWindow.lookup("freqSlider")
 
    // DMZ Function Object Definition
    , functions = []
@@ -43,8 +39,8 @@ var dmz =
    */
 
    // Constants
-   , WIDTH = 551
-   , HEIGHT = 431
+   , WIDTH = 616
+   , HEIGHT = 413
    , MAX_X = 10
    , MAX_Y = 10
    , TOLERANCE = .05
@@ -93,8 +89,8 @@ drawFunction = function (tolerance) {
      , path = dmz.ui.graph.createPainterPath()
      ;
 
-   graphScene.addLine(0, 216, WIDTH, 216);
-   graphScene.addLine(276, 0, 276, HEIGHT);
+   graphScene.addLine(0, HEIGHT / 2, WIDTH, HEIGHT / 2);
+   graphScene.addLine(WIDTH / 2, 0, WIDTH / 2, HEIGHT);
    path.moveTo(0, 0);
 
    functions = dmz.object.getObjects();
