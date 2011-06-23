@@ -4,6 +4,8 @@ var dmz =
    , objectType: require("dmz/runtime/objectType")
    , module: require("dmz/runtime/module")
    , util: require("dmz/types/util")
+   , mask: require("dmz/types/mask")
+   , vector: require("dmz/types/vector")
    }
 
   , ObjectTypes =
@@ -21,6 +23,7 @@ var dmz =
      , PolyDataArrayLengthHandle: dmz.defs.createNamedHandle("data_array_length")
      , SelectedHandle: dmz.defs.createNamedHandle("selected_handle")
      , FunctionStringHandle: dmz.defs.createNamedHandle("function_string")
+     , RGBColorHandle: dmz.defs.createNamedHandle("RGB_value")
      }
   , States =
      { SinState: dmz.defs.lookupState("SIN_FUNC")
@@ -28,7 +31,64 @@ var dmz =
      , LineState: dmz.defs.lookupState("LINE_FUNC")
      , PolyState: dmz.defs.lookupState("POLY_FUNC")
      }
+  , Functions =
+     { functionToString: false
+     }
+
+  , functionToString
+
+  , DEBUG = false;
   ;
+
+functionToString = function (functionHandle) {
+
+   var SinFunctionTypeMask = dmz.mask.create(States.SinState)
+     , CosFunctionTypeMask = dmz.mask.create(States.CosState)
+     , LineFunctionTypeMask = dmz.mask.create(States.LineState)
+     , PolyFunctionTypeMask = dmz.mask.create(States.PolyState)
+     , xConst = dmz.object.scalar(functionHandle, Handles.XConstHandle)
+     , yConst = dmz.object.scalar(functionHandle, Handles.YConstHandle)
+     , amp = dmz.object.scalar(functionHandle, Handles.AmpHandle)
+     , freq = dmz.object.scalar(functionHandle, Handles.FreqHandle)
+     , xVal = dmz.object.scalar(functionHandle, Handles.XValHandle)
+     , currentState = dmz.object.state(functionHandle, Handles.TypeHandle)
+     , polyData = dmz.object.data(functionHandle, Handles.PolyDataHandle)
+     , polyDataLength
+     , equationString = ""
+     , itor
+     ;
+
+   if (currentState.equal(SinFunctionTypeMask)) {
+
+      equationString = amp + " * sin(" + freq + "x + " + xConst + " ) + " + yConst;
+      if (DEBUG) { self.log.warn(equationString); }
+   }
+   if (currentState.equal(CosFunctionTypeMask)) {
+
+      equationString = amp + " * cos(" + freq + "x + " + xConst + " ) + " + yConst;
+      if (DEBUG) { self.log.warn(equationString); }
+   }
+   if (currentState.equal(LineFunctionTypeMask)) {
+
+      equationString = xConst + "x + " + yConst;
+      if (DEBUG) { self.log.warn(equationString); }
+   }
+   if (currentState.equal(PolyFunctionTypeMask)) {
+      polyDataLength = polyData.number(Handles.PolyDataArrayLengthHandle
+                                     , Handles.PolyDataArrayLengthHandle)
+
+      for (itor = 0; itor < polyDataLength; itor++) {
+
+         equationString += "(" + polyData.number(Handles.PolyDataArrayHandle, itor)
+                                + "x^" + (polyDataLength - itor) + ") + ";
+      }
+      equationString += yConst;
+      if (DEBUG) { self.log.warn(equationString); }
+   }
+   return equationString;
+};
+
+Functions.functionToString = functionToString;
 
 (function () {
 
@@ -45,6 +105,11 @@ var dmz =
    Object.keys(States).forEach(function (stateName) {
 
       dmz.util.defineConst(exports, stateName, States[stateName]);
+   });
+
+   Object.keys(Functions).forEach(function (fncName) {
+
+      dmz.util.defineConst(exports, fncName, Functions[fncName]);
    });
 
 }());

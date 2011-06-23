@@ -23,11 +23,15 @@ var dmz =
    }
 
    // UI
-   , mainCreatorWindow = dmz.ui.loader.load("FunctionCreator.ui")
-   , functionList = mainCreatorWindow.lookup("FunctionList")
+   , mainSelectorWindow = dmz.ui.loader.load("FunctionSelector.ui")
+   , functionList = mainSelectorWindow.lookup("FunctionList")
+   , addFunctionButton = mainSelectorWindow.lookup("AddFunction")
+   , deleteFunctionButton = mainSelectorWindow.lookup("DeleteFunction")
 
+   // Constants
+   , DEBUG = false
    // Globals
-   , functions = []
+   , currentlySelectedHandle
 
    // Functions
    , populateFunctionList
@@ -39,7 +43,9 @@ populateFunctionList = function () {
    var objects
      , item
      ;
+
    objects = dmz.object.getObjects();
+   functionList.clear();
    for (item in objects) {
 
       if ( dmz.grapher.FunctionType.isOfExactType (dmz.object.type(objects[item]))) {
@@ -50,6 +56,7 @@ populateFunctionList = function () {
 };
 
 functionList.observe (self, "currentItemChanged", function (current, previous) {
+   /* modify so it observes, instead of iterating through ALL the objects */
    var item
      , objects = dmz.object.getObjects()
      , handle
@@ -58,32 +65,45 @@ functionList.observe (self, "currentItemChanged", function (current, previous) {
 
       handle = objects[item];
       if(dmz.grapher.FunctionType.isOfExactType (dmz.object.type(handle))) {
+
          if (!previous) {
 
             if (dmz.object.text(handle, dmz.grapher.FunctionStringHandle) === current.text()) {
 
-               dmz.object.flag(handle, dmz.grapher.SelectedHandle, true)
+               dmz.object.flag(handle, dmz.grapher.SelectedHandle, true);
+               currentlySelectedHandle = handle;
             }
-            //self.log.warn("New Selection:", current.text());
          }
-         else {
+         else if (current) {
             if (dmz.object.text(handle, dmz.grapher.FunctionStringHandle) === previous.text()) {
 
-               dmz.object.flag(handle, dmz.grapher.SelectedHandle, false)
+               dmz.object.flag(handle, dmz.grapher.SelectedHandle, false);
             }
             if (dmz.object.text(handle, dmz.grapher.FunctionStringHandle) === current.text()) {
 
-               dmz.object.flag(handle, dmz.grapher.SelectedHandle, true)
+               dmz.object.flag(handle, dmz.grapher.SelectedHandle, true);
+               currentlySelectedHandle = handle;
             }
-            //self.log.warn("New Selection:", current.text(), "<--> Previous Selection:", previous.text());
          }
       }
    }
 });
 
+deleteFunctionButton.observe (self, "clicked", function () {
+
+   dmz.object.flag(currentlySelectedHandle, dmz.grapher.SelectedHandle, false);
+   dmz.object.destroy(currentlySelectedHandle);
+   populateFunctionList();
+});
+
+addFunctionButton.observe (self, "clicked", function() {
+
+
+});
+
 init = function () {
 
-   mainCreatorWindow.show();
+   mainSelectorWindow.show();
    populateFunctionList();
 };
 

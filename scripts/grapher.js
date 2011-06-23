@@ -50,7 +50,6 @@ var dmz =
    // Functions
    , xToScreenX
    , yToScreenY
-   , functionToString
    , drawFunction
    , init
    ;
@@ -58,54 +57,6 @@ var dmz =
 xToScreenX = function (x) { return (WIDTH / (2 * MAX_X)) * (x + MAX_X); };
 
 yToScreenY = function (y) { return HEIGHT - ((HEIGHT / (2 * MAX_Y)) * (y + MAX_Y)); };
-
-functionToString = function (functionHandle) {
-
-   var SinFunctionTypeMask = dmz.mask.create(dmz.grapher.SinState)
-     , CosFunctionTypeMask = dmz.mask.create(dmz.grapher.CosState)
-     , LineFunctionTypeMask = dmz.mask.create(dmz.grapher.LineState)
-     , PolyFunctionTypeMask = dmz.mask.create(dmz.grapher.PolyState)
-     , xConst = dmz.object.scalar(functionHandle, dmz.grapher.XConstHandle)
-     , yConst = dmz.object.scalar(functionHandle, dmz.grapher.YConstHandle)
-     , amp = dmz.object.scalar(functionHandle, dmz.grapher.AmpHandle)
-     , freq = dmz.object.scalar(functionHandle, dmz.grapher.FreqHandle)
-     , xVal = dmz.object.scalar(functionHandle, dmz.grapher.XValHandle)
-     , currentState = dmz.object.state(functionHandle, dmz.grapher.TypeHandle)
-     , polyData = dmz.object.data(functionHandle, dmz.grapher.PolyDataHandle)
-     , polyDataLength
-     , equationString = ""
-     , itor
-     ;
-
-   if (currentState.equal(SinFunctionTypeMask)) {
-
-      equationString = amp + " * sin(" + freq + "x + " + xConst + " ) + " + yConst;
-      if (DEBUG) { self.log.warn(equationString); }
-   }
-   if (currentState.equal(CosFunctionTypeMask)) {
-
-      equationString = amp + " * cos(" + freq + "x + " + xConst + " ) + " + yConst;
-      if (DEBUG) { self.log.warn(equationString); }
-   }
-   if (currentState.equal(LineFunctionTypeMask)) {
-
-      equationString = xConst + "x + " + yConst;
-      if (DEBUG) { self.log.warn(equationString); }
-   }
-   if (currentState.equal(PolyFunctionTypeMask)) {
-      polyDataLength = polyData.number(dmz.grapher.PolyDataArrayLengthHandle
-                                     , dmz.grapher.PolyDataArrayLengthHandle)
-
-      for (itor = 0; itor < polyDataLength; itor++) {
-
-         equationString += "(" + polyData.number(dmz.grapher.PolyDataArrayHandle, itor)
-                                + "x^" + (polyDataLength - itor) + ") + ";
-      }
-      equationString += yConst;
-      if (DEBUG) { self.log.warn(equationString); }
-   }
-   return equationString;
-};
 
 drawFunction = function (tolerance) {
 
@@ -139,11 +90,11 @@ drawFunction = function (tolerance) {
      , path = dmz.ui.graph.createPainterPath()
      ;
 
-   self.log.warn("DRAWING TIME!!");
    graphScene.addLine(0, 216, WIDTH, 216);
    graphScene.addLine(276, 0, 276, HEIGHT);
    path.moveTo(0, 0);
-   //path.lineTo (100, 100);
+
+   functions = dmz.object.getObjects();
 
    for (functionItor = 0; functionItor < functions.length; functionItor++){
 
@@ -257,6 +208,7 @@ init = function () {
      , polyValues
      , itor
      , graphScene
+     , defaultRGBVector = dmz.vector.create([1, 1, 1]);
      ;
 
    // create initial sin function
@@ -268,9 +220,10 @@ init = function () {
    dmz.object.scalar(sinFunction, dmz.grapher.YConstHandle, 0);
    dmz.object.scalar(sinFunction, dmz.grapher.AmpHandle, 4);
    dmz.object.scalar(sinFunction, dmz.grapher.FreqHandle, Math.PI);
+   dmz.object.vector(sinFunction, dmz.grapher.RGBColorHandle, defaultRGBVector);
    dmz.object.text(sinFunction
                    , dmz.grapher.FunctionStringHandle
-                   , functionToString(sinFunction))
+                   , dmz.grapher.functionToString(sinFunction))
                    ;
    dmz.object.flag(sinFunction, dmz.grapher.SelectedHandle, false);
    functions.push(sinFunction);
@@ -282,9 +235,10 @@ init = function () {
    dmz.object.state(lineFunction, dmz.grapher.TypeHandle, dmz.grapher.LineState);
    dmz.object.scalar(lineFunction, dmz.grapher.YConstHandle, 0);
    dmz.object.scalar(lineFunction, dmz.grapher.XConstHandle, 1);
+   dmz.object.vector(lineFunction, dmz.grapher.RGBColorHandle, defaultRGBVector);
    dmz.object.text(lineFunction
                    , dmz.grapher.FunctionStringHandle
-                   , functionToString(lineFunction))
+                   , dmz.grapher.functionToString(lineFunction))
                    ;
    dmz.object.flag(lineFunction, dmz.grapher.SelectedHandle, false);
    functions.push(lineFunction);
@@ -306,9 +260,10 @@ init = function () {
    dmz.object.state(polyFunction, dmz.grapher.TypeHandle, dmz.grapher.PolyState);
    dmz.object.scalar(polyFunction, dmz.grapher.YConstHandle, 0);
    dmz.object.data(polyFunction, dmz.grapher.PolyDataHandle, data);
+   dmz.object.vector(polyFunction, dmz.grapher.RGBColorHandle, defaultRGBVector);
    dmz.object.text(polyFunction
                    , dmz.grapher.FunctionStringHandle
-                   , functionToString(polyFunction))
+                   , dmz.grapher.functionToString(polyFunction))
                    ;
    dmz.object.flag(polyFunction, dmz.grapher.SelectedHandle, false);
    functions.push(polyFunction);

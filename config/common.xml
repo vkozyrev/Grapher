@@ -19,7 +19,7 @@
       <bottom right="true" left="true"/>
    </corners>
    <window title="Grapher"/>
-   <central-widget name="mainWindow"/>
+   <central-widget name="MainWindow"/>
    <!--<menu-bar>
       <menu text="&amp;File"/>
       <menu text="&amp;Edit"/>
