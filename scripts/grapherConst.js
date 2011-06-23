@@ -6,6 +6,7 @@ var dmz =
    , util: require("dmz/types/util")
    , mask: require("dmz/types/mask")
    , vector: require("dmz/types/vector")
+   , message: require("dmz/runtime/messaging")
    }
 
   , ObjectTypes =
@@ -34,6 +35,10 @@ var dmz =
   , Functions =
      { functionToString: false
      }
+  , Messages =
+    { functionCreatedMessage: dmz.message.create("FunctionCreatedMessage")
+    , addFunctionButtonMessage: dmz.message.create("AddFunctionButtonMessage")
+    }
 
   , functionToString
 
@@ -110,6 +115,11 @@ Functions.functionToString = functionToString;
    Object.keys(Functions).forEach(function (fncName) {
 
       dmz.util.defineConst(exports, fncName, Functions[fncName]);
+   });
+
+   Object.keys(Messages).forEach(function (msgName) {
+
+      dmz.util.defineConst(exports, msgName, Messages[msgName]);
    });
 
 }());

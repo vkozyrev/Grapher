@@ -98,7 +98,13 @@ deleteFunctionButton.observe (self, "clicked", function () {
 
 addFunctionButton.observe (self, "clicked", function() {
 
+   dmz.grapher.addFunctionButtonMessage.send();
+});
 
+dmz.grapher.functionCreatedMessage.subscribe(self, function(data){
+   currentlySelectedHandle = dmz.data.unwrapNumber(data);
+   self.log.warn(dmz.data.unwrapNumber(data));
+   populateFunctionList();
 });
 
 init = function () {

@@ -291,7 +291,7 @@
       </attribute>
       <layout class="QVBoxLayout" name="verticalLayout_5">
        <item>
-        <widget class="QLabel" name="CosFunctionDisplay_2">
+        <widget class="QLabel" name="LineFunctionDisplay">
          <property name="text">
           <string/>
          </property>

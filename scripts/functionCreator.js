@@ -54,8 +54,14 @@ var dmz =
    , lineFunctionDisplay = mainCreatorWindow.lookup("LineFunctionDisplay")
 
    // Functions
+   , functionCreated
    , init
    ;
+
+functionCreated = function (handle) {
+
+   dmz.grapher.functionCreatedMessage.send(dmz.data.wrapNumber(handle));
+}
 
 createSinButton.observe (self, "clicked", function () {
 
@@ -89,6 +95,7 @@ createSinButton.observe (self, "clicked", function () {
                     , dmz.grapher.FunctionStringHandle
                     , dmz.grapher.functionToString(sinFunction));
       dmz.object.flag(sinFunction, dmz.grapher.SelectedHandle, false);
+      functionCreated(sinFunction);
    }
 });
 
@@ -111,7 +118,7 @@ createCosButton.observe (self, "clicked", function () {
    else {
 
       cosFunction = dmz.object.create(dmz.grapher.FunctionType);
-      dmz.object.activate(cinFunction);
+      dmz.object.activate(cosFunction);
 
       dmz.object.state(cosFunction, dmz.grapher.TypeHandle, dmz.grapher.CosState);
       dmz.object.scalar(cosFunction, dmz.grapher.AmpHandle, parseFloat(amp));
@@ -124,6 +131,7 @@ createCosButton.observe (self, "clicked", function () {
                     , dmz.grapher.FunctionStringHandle
                     , dmz.grapher.functionToString(cosFunction));
       dmz.object.flag(cosFunction, dmz.grapher.SelectedHandle, false);
+      functionCreated(cosFunction);
    }
 });
 
@@ -148,26 +156,32 @@ createLineButton.observe (self, "clicked", function () {
 
       dmz.object.state(lineFunction, dmz.grapher.TypeHandle, dmz.grapher.LineState);
       dmz.object.scalar(lineFunction, dmz.grapher.XConstHandle, parseFloat(xConst));
-      dmz.object.scalar(lineFUnction, dmz.grapher.YConstHandle, parseFloat(yConst));
+      dmz.object.scalar(lineFunction, dmz.grapher.YConstHandle, parseFloat(yConst));
       rgbVector = dmz.vector.create([parseFloat(rColor), parseFloat(gColor), parseFloat(bColor)]);
-      dmz.object.vector(lineFunction, ddmz.grapherRGBColorHandle, rgbVector);
+      dmz.object.vector(lineFunction, dmz.grapherRGBColorHandle, rgbVector);
       dmz.object.text(lineFunction
                     , dmz.grapher.FunctionStringHandle
                     , dmz.grapher.functionToString(lineFunction));
       dmz.object.flag(lineFunction, dmz.grapher.SelectedHandle, false);
+      functionCreated(lineFunction);
    }
+});
+
+dmz.grapher.addFunctionButtonMessage.subscribe(self, function () {
+
+   if (mainCreatorWindow) { mainCreatorWindow.show(); }
+   else { self.log.error("ERROR: Failed to initialize the Creator Window."); }
 });
 
 init = function () {
    if (mainCreatorWindow) {
 
-      mainCreatorWindow.show();
+      //mainCreatorWindow.show();
    }
    else {
 
-      self.log.error("ERROR: Failed to initialize the Creator Window.")
+      self.log.error("ERROR: Failed to initialize the Creator Window.");
    }
-}
+};
 
 init();
-

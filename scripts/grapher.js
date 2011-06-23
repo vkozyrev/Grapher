@@ -31,6 +31,9 @@ var dmz =
 
    // DMZ Function Object Definition
    , functions = []
+
+   // Messages
+   , testMessage = dmz.message.create("Test Message")
    /*
    type = {sin, cos, linear, polynomial}
 
