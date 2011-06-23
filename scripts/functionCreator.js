@@ -33,6 +33,7 @@ var dmz =
    , gInputSin = mainCreatorWindow.lookup("GInputSin")
    , bInputSin = mainCreatorWindow.lookup("BInputSin")
    , createSinButton = mainCreatorWindow.lookup("CreateSinButton")
+   , sinFunctionDisplay = mainCreatorWindow.lookup("SinFunctionDisplay")
 
    , amplitudeInputCos = mainCreatorWindow.lookup("AmplitudeInputCos")
    , frequencyInputCos = mainCreatorWindow.lookup("FrequencyInputCos")
@@ -42,6 +43,7 @@ var dmz =
    , gInputCos = mainCreatorWindow.lookup("GInputCos")
    , bInputCos = mainCreatorWindow.lookup("BInputCos")
    , createCosButton = mainCreatorWindow.lookup("CreateCosButton")
+   , cosFunctionDisplay = mainCreatorWindow.lookup("CosFunctionDisplay")
 
    , xConstInputLine = mainCreatorWindow.lookup("XConstInputLine")
    , yConstInputLine = mainCreatorWindow.lookup("YConstInputLine")
@@ -49,6 +51,7 @@ var dmz =
    , gInputLine = mainCreatorWindow.lookup("GInputLine")
    , bInputLine = mainCreatorWindow.lookup("BInputLine")
    , createLineButton = mainCreatorWindow.lookup("CreateLineButton")
+   , lineFunctionDisplay = mainCreatorWindow.lookup("LineFunctionDisplay")
 
    // Functions
    , init
@@ -91,12 +94,68 @@ createSinButton.observe (self, "clicked", function () {
 
 createCosButton.observe (self, "clicked", function () {
 
+   var amp = amplitudeInputCos.text()
+     , freq = frequencyInputCos.text()
+     , xConst = xConstInputCos.text()
+     , yConst = yConstInputCos.text()
+     , rColor = rInputCos.text()
+     , gColor = gInputCos.text()
+     , bColor = bInputCos.text()
+     , rgbVector
+     , cosFunction
+     ;
+   if (!freq || !xConst || !yConst || !rColor || !gColor || !bColor) {
 
+      self.log.error("ERROR: Please enter all the required fields");
+   }
+   else {
+
+      cosFunction = dmz.object.create(dmz.grapher.FunctionType);
+      dmz.object.activate(cinFunction);
+
+      dmz.object.state(cosFunction, dmz.grapher.TypeHandle, dmz.grapher.CosState);
+      dmz.object.scalar(cosFunction, dmz.grapher.AmpHandle, parseFloat(amp));
+      dmz.object.scalar(cosFunction, dmz.grapher.FreqHandle, parseFloat(freq));
+      dmz.object.scalar(cosFunction, dmz.grapher.XConstHandle, parseFloat(xConst));
+      dmz.object.scalar(cosFunction, dmz.grapher.YConstHandle, parseFloat(yConst));
+      rgbVector = dmz.vector.create([parseFloat(rColor), parseFloat(gColor), parseFloat(bColor)]);
+      dmz.object.vector(cosFunction, dmz.grapher.RGBColorHandle, rgbVector);
+      dmz.object.text(cosFunction
+                    , dmz.grapher.FunctionStringHandle
+                    , dmz.grapher.functionToString(cosFunction));
+      dmz.object.flag(cosFunction, dmz.grapher.SelectedHandle, false);
+   }
 });
 
 createLineButton.observe (self, "clicked", function () {
+   var xConst = xConstInputLine.text()
+     , yConst = yConstInputLine.text()
+     , rColor = rInputLine.text()
+     , gColor = gInputLine.text()
+     , bColor = bInputLine.text()
+     , rgbVector
+     , lineFunction
+     ;
 
+   if (!xConst || !yConst || !rColor || !gColor || !bColor) {
 
+      self.log.error("ERROR: Please endter all the required fields");
+   }
+   else {
+
+      lineFunction = dmz.object.create(dmz.grapher.FunctionType);
+      dmz.object.activate(lineFunction);
+
+      dmz.object.state(lineFunction, dmz.grapher.TypeHandle, dmz.grapher.LineState);
+      dmz.object.scalar(lineFunction, dmz.grapher.XConstHandle, parseFloat(xConst));
+      dmz.object.scalar(lineFUnction, dmz.grapher.YConstHandle, parseFloat(yConst));
+      rgbVector = dmz.vector.create([parseFloat(rColor), parseFloat(gColor), parseFloat(bColor)]);
+      dmz.object.vector(lineFunction, ddmz.grapherRGBColorHandle, rgbVector);
+      dmz.object.text(lineFunction
+                    , dmz.grapher.FunctionStringHandle
+                    , dmz.grapher.functionToString(lineFunction));
+      dmz.object.flag(lineFunction, dmz.grapher.SelectedHandle, false);
+   }
 });
 
 init = function () {
