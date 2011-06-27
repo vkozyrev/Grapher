@@ -17,6 +17,7 @@
    <path value="./scripts"/>
    <path value="../js/scripts"/>
    <path value="./UI" />
+
    <instance name="grapher"/>
    <instance name="functionSelector" />
    <instance name="functionCreator" />
