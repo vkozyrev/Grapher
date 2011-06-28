@@ -6,7 +6,7 @@
    <plugin name="dmzObjectModuleBasic"/>
    <plugin name="dmzObjectModuleGridBasic"/>
    <plugin name="dmzQtModuleMainWindowBasic" scope="main-window"/>
-   <plugin name="dmzTestPlugin" scope="grapher"/>
+   <plugin name="dmzVladsTestPlugin" />
 
    <plugin name="dmzQtPluginObjectInspector"/>
    <plugin name="dmzQtPluginMessageInspector"/>

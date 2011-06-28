@@ -1,6 +1,9 @@
 #include "dmzVladsTestPlugin.h"
 #include <dmzRuntimePluginFactoryLinkSymbol.h>
 #include <dmzRuntimePluginInfo.h>
+#include <dmzObjectAttributeMasks.h>
+#include <dmzTypesUUID.h>
+#include <dmzRuntimeObjectType.h>
 
 dmz::VladsTestPlugin::VladsTestPlugin (const PluginInfo &Info, Config &local) :
       Plugin (Info),
@@ -25,16 +28,16 @@ dmz::VladsTestPlugin::update_plugin_state (
       const UInt32 Level) {
 
    if (State == PluginStateInit) {
-
+      _log.out << " Plugin Init" << endl;
    }
    else if (State == PluginStateStart) {
-
+      _log.out << " Plugin Start" << endl;
    }
    else if (State == PluginStateStop) {
-
+      _log.out << " Plugin Stop" << endl;
    }
    else if (State == PluginStateShutdown) {
-
+      _log.out << " Plugin Shutdown" << endl;
    }
 }
 
@@ -69,6 +72,7 @@ dmz::VladsTestPlugin::receive_message (
       const Data *InData,
       Data *outData) {
 
+   _log.out << "RECIEVED A MESSAGE" << endl;
 }
 
 
@@ -80,6 +84,9 @@ dmz::VladsTestPlugin::create_object (
       const ObjectType &Type,
       const ObjectLocalityEnum Locality) {
 
+   _log.out << "[create_object] handle: " << ObjectHandle
+            << " type: " << Type.get_name ()
+            << " uuid: " << Identity.to_string () << endl;
 }
 
 
@@ -340,6 +347,30 @@ dmz::VladsTestPlugin::update_object_data (
 void
 dmz::VladsTestPlugin::_init (Config &local) {
 
+   _defaultAttributeHandle = activate_default_object_attribute (
+      ObjectCreateMask |
+      ObjectDestroyMask |
+      ObjectUUIDMask |
+      ObjectPositionMask);
+
+   _link1AttributeHandle = activate_object_attribute (
+      "Ex_Link1",
+      ObjectLinkMask | ObjectUnlinkMask);
+
+   _link2AttributeHandle = activate_object_attribute (
+      "Ex_Link2",
+      ObjectLinkMask | ObjectUnlinkMask);
+
+   _flagAttributeHandle = activate_object_attribute (
+      "Ex_Flag_Visible",
+      ObjectFlagMask);
+
+   _watchType = Message (
+      "Object_Create_Message",
+      get_plugin_runtime_context ()
+      );
+
+   subscribe_to_message (_watchType);
 }
 
 

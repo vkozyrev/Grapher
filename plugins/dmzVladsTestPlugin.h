@@ -6,6 +6,7 @@
 #include <dmzRuntimeMessaging.h>
 #include <dmzRuntimePlugin.h>
 #include <dmzRuntimeTimeSlice.h>
+#include <dmzRuntimeDefinitions.h>
 
 namespace dmz {
 
@@ -208,6 +209,13 @@ namespace dmz {
       protected:
          // VladsTestPlugin Interface
          void _init (Config &local);
+
+         Handle _defaultAttributeHandle;
+         Handle _link1AttributeHandle;
+         Handle _link2AttributeHandle;
+         Handle _flagAttributeHandle;
+
+         Message _watchType;
 
          Log _log;
 
