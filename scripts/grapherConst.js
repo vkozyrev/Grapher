@@ -25,6 +25,8 @@ var dmz =
      , SelectedHandle: dmz.defs.createNamedHandle("selected_handle")
      , FunctionStringHandle: dmz.defs.createNamedHandle("function_string")
      , RGBColorHandle: dmz.defs.createNamedHandle("RGB_value")
+     , LinkHandle1: dmz.defs.createNamedHandle("link_handle_1")
+     , LinkHandle2: dmz.defs.createNamedHandle("link_handle_2")
      }
   , States =
      { SinState: dmz.defs.lookupState("SIN_FUNC")

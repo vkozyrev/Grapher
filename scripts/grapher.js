@@ -265,6 +265,12 @@ init = function () {
    dmz.object.flag(polyFunction, dmz.grapher.SelectedHandle, false);
    functions.push(polyFunction);
 
+   dmz.object.link(dmz.grapher.LinkHandle1, sinFunction, lineFunction);
+   dmz.object.link(dmz.grapher.LinkHandle1, sinFunction, polyFunction);
+
+   dmz.object.link(dmz.grapher.LinkHandle2, sinFunction, lineFunction);
+   dmz.object.link(dmz.grapher.LinkHandle2, sinFunction, polyFunction);
+
    //set up window
    dmz.ui.mainWindow.centralWidget(mainGraphWindow);
    if (mainGraphWindow) {
