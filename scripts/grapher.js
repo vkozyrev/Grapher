@@ -24,9 +24,21 @@ var dmz =
    //UI
    , mainGraphWindow = dmz.ui.loader.load("Grapher.ui")
    , grapherView = mainGraphWindow.lookup("grapherView")
+   , linkButton1 = mainGraphWindow.lookup("linkButton1")
+   , linkButton2 = mainGraphWindow.lookup("linkButton2")
+   , unlinkButton1 = mainGraphWindow.lookup("unlinkButton1")
+   , unlinkButton2 = mainGraphWindow.lookup("unlinkButton2")
 
    // DMZ Function Object Definition
    , functions = []
+
+   // Globals
+   , sinFunction
+   , cosFunction
+   , lineFunction
+   , polyFunction
+   , link1
+   , link2
 
    /*
    type = {sin, cos, linear, polynomial}
@@ -198,10 +210,7 @@ drawFunction = function (tolerance) {
 };
 
 init = function () {
-   var sinFunction
-     , polyFunction
-     , lineFunction
-     , data
+   var data
      , polyValues
      , itor
      , graphScene
@@ -265,11 +274,13 @@ init = function () {
    dmz.object.flag(polyFunction, dmz.grapher.SelectedHandle, false);
    functions.push(polyFunction);
 
+   /*
    dmz.object.link(dmz.grapher.LinkHandle1, sinFunction, lineFunction);
    dmz.object.link(dmz.grapher.LinkHandle1, sinFunction, polyFunction);
 
    dmz.object.link(dmz.grapher.LinkHandle2, sinFunction, lineFunction);
    dmz.object.link(dmz.grapher.LinkHandle2, sinFunction, polyFunction);
+   */
 
    //set up window
    dmz.ui.mainWindow.centralWidget(mainGraphWindow);
@@ -280,6 +291,27 @@ init = function () {
       drawFunction(TOLERANCE);
    }
 };
+
+linkButton1.observe(self, "clicked", function () {
+
+   link1 = dmz.object.link(dmz.grapher.LinkHandle1, sinFunction, lineFunction);
+});
+
+linkButton2.observe(self, "clicked", function () {
+
+   link2 = dmz.object.link(dmz.grapher.LinkHandle2, sinFunction, polyFunction);
+});
+
+unlinkButton1.observe(self, "clicked", function () {
+
+   dmz.object.unlink(link1);
+});
+
+unlinkButton2.observe(self, "clicked", function () {
+
+   dmz.object.unlink(link2);
+   dmz.object.vector.remove(sinFunction, dmz.grapher.RGBColorHandle);
+});
 
 dmz.object.flag.observe(self, dmz.grapher.SelectedHandle, function (handle, attr, newFlag, oldFlag) {
 

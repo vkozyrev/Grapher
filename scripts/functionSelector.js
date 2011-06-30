@@ -75,6 +75,7 @@ functionList.observe (self, "currentItemChanged", function (current, previous) {
             }
          }
          else if (current) {
+
             if (dmz.object.text(handle, dmz.grapher.FunctionStringHandle) === previous.text()) {
 
                dmz.object.flag(handle, dmz.grapher.SelectedHandle, false);
@@ -96,12 +97,12 @@ deleteFunctionButton.observe (self, "clicked", function () {
    populateFunctionList();
 });
 
-addFunctionButton.observe (self, "clicked", function() {
+addFunctionButton.observe (self, "clicked", function () {
 
    dmz.grapher.addFunctionButtonMessage.send();
 });
 
-dmz.grapher.functionCreatedMessage.subscribe(self, function(data){
+dmz.grapher.functionCreatedMessage.subscribe(self, function (data) {
    currentlySelectedHandle = dmz.data.unwrapNumber(data);
    self.log.warn(dmz.data.unwrapNumber(data));
    populateFunctionList();
